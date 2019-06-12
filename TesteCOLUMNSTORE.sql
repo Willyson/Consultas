@@ -1,0 +1,67 @@
+USE [AdventureWorks2016CTP3]
+GO
+
+/****** Object:  Table [Sales].[SalesOrderDetail]    Script Date: 07/06/2019 16:58:40 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [Sales].TABELA_TESTE(
+	[SalesOrderID] [int] NOT NULL,
+	[SalesOrderDetailID] [int]  NOT NULL,
+	[CarrierTrackingNumber] [nvarchar](25) NULL,
+	[OrderQty] [smallint] NOT NULL,
+	[ProductID] [int] NOT NULL,
+	[SpecialOfferID] [int] NOT NULL,
+	[UnitPrice] [money] NOT NULL,
+	[UnitPriceDiscount] [money] NOT NULL,
+	[LineTotal]  AS (isnull(([UnitPrice]*((1.0)-[UnitPriceDiscount]))*[OrderQty],(0.0))),
+	[rowguid] [uniqueidentifier] ROWGUIDCOL  NOT NULL,
+	[ModifiedDate] [datetime] NOT NULL,
+	 
+
+	-- CONSTRAINT [IX_TESTE_SalesOrderID] PRIMARY KEY CLUSTERED 
+	--(
+	--	[SalesOrderID] ASC
+	--),
+
+	PRIMARY KEY (SalesOrderDetailID)
+	
+)
+GO
+
+
+SALES.TABELA_TESTE
+
+CREATE NONCLUSTERED COLUMNSTORE INDEX IX_COLUMNSTORE_TESTE ON Sales.TABELA_TESTE (SalesOrderDetailID) 
+--WITH (DROP_EXISTING = OFF )
+
+CREATE NONCLUSTERED COLUMNSTORE INDEX IX_COLUMNSTORE_TESTE ON Sales.TABELA_TESTE (SalesOrderDetailID)
+
+CREATE CLUSTERED COLUMNSTORE INDEX IX_COLUMNSOTORE_CLUSTERED ON Sales.TABELA_TESTE
+
+CREATE NONCLUSTERED COLUMNSTORE INDEX IX_COLUMNSOTORE_NONCLUSTERED ON Sales.TABELA_TESTE (SalesOrderDetailID,CarrierTrackingNumber,ProductID)
+
+DROP INDEX IX_COLUMNSOTORE_CLUSTERED ON Sales.TABELA_TESTE
+
+DROP TABLE Sales.TABELA_TESTE
+
+
+SELECT * FROM Sales.TABELA_TESTE
+WHERE SalesOrderDetailID BETWEEN 37804 AND 39304 
+
+
+CREATE NONCLUSTERED COLUMNSTORE INDEX PK ON Sales.TABELA_TESTE (SalesOrderID,SalesOrderDetailID)
+WITH (DROP_EXISTING = ON)
+
+
+
+
+--SELECT * 
+--INTO Sales.TABELA_TESTE
+--FROM Sales.SalesOrderDetail
+
+--ALTER TABLE Sales.TABELA_TESTE
+--ADD CONSTRAINT PK PRIMARY KEY CLUSTERED (SalesOrderDetailID)
